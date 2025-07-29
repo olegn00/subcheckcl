@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Оплата доступа</title>
+  <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
+</head>
+<body>
+  <h2>Оплата доступа</h2>
+  <button onclick="pay()">Оплатить 100₽</button>
+
+  <script>
+    function getTelegramId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('telegram_id');
+    }
+
+    function pay() {
+      const telegramId = getTelegramId();
+      const widget = new cp.CloudPayments();
+      widget.charge({
+          publicId: 'pk_вашPublicId', // вставь свой publicId
+          description: 'Оплата доступа в Telegram-группу',
+          amount: 100,
+          currency: 'RUB',
+          invoiceId: `tg_${telegramId}`,
+          accountId: telegramId,
+          skin: "classic",
+          data: {
+              telegram_id: telegramId
+          }
+      },
+      function (options) {
+          alert("Оплата прошла успешно");
+      },
+      function (reason, options) {
+          alert("Оплата не удалась");
+      });
+    }
+  </script>
+</body>
+</html>
