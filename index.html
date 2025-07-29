@@ -5,16 +5,23 @@
   <title>Оплата доступа</title>
   <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
   <style>
-    body {
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      background: #f6f9fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f9f9f9;
-      text-align: center;
+      color: #333;
+    }
+    #loading-text {
+      font-size: 1.2rem;
+      user-select: none;
     }
   </style>
 </head>
 <body>
-  <h2>Оплата доступа</h2>
+  <div id="loading-text">Подготовка оплаты...</div>
 
   <script>
     function getTelegramId() {
@@ -27,24 +34,25 @@
 
       const widget = new cp.CloudPayments();
       widget.charge({
-          publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // твой publicId
+          publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // Твой publicId
           description: 'Оплата доступа в Telegram-группу',
           amount: 100,
           currency: 'RUB',
           invoiceId: `tg_${telegramId}`,
           accountId: telegramId,
-          skin: "classic",
+          skin: "mini",
           data: {
               telegram_id: telegramId
           }
       },
       function (options) {
           alert("Оплата прошла успешно!");
-          // Можно сюда добавить редирект или сообщение
+          // Можно сделать редирект или закрыть окно
+          document.getElementById('loading-text').innerText = "Оплата успешна! Закройте это окно.";
       },
       function (reason, options) {
-          alert("Оплата не удалась, попробуйте позже.");
-          // Обработка ошибки
+          alert("Оплата не удалась.");
+          document.getElementById('loading-text').innerText = "Оплата не удалась. Попробуйте снова.";
       });
     }
   </script>
