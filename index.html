@@ -19,22 +19,23 @@
       const telegramId = getTelegramId();
       const widget = new cp.CloudPayments();
       widget.charge({
-          publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // вставь свой publicId
-          description: 'Оплата доступа в Telegram-группу',
-          amount: 100,
-          currency: 'RUB',
-          invoiceId: `tg_${telegramId}`,
-          accountId: telegramId,
-          skin: "classic",
-          data: {
-              telegram_id: telegramId
-          }
+        publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // замени на свой Public ID
+        description: 'Оплата доступа в Telegram-группу',
+        amount: 100,
+        currency: 'RUB',
+        invoiceId: `tg_${telegramId}`,
+        accountId: telegramId,
+        skin: "classic",
+        data: {
+          telegram_id: telegramId
+        },
+        resultUrl: `https://t.me/subcheckstclbot?start=payment_success` // замени на имя своего бота
       },
       function (options) {
-          alert("Оплата прошла успешно");
+        // успешно — CloudPayments сам редиректит по resultUrl
       },
       function (reason, options) {
-          alert("Оплата не удалась");
+        alert("Оплата не удалась");
       });
     }
   </script>
