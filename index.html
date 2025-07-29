@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Оплата доступа</title>
   <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <h2>Оплата доступа</h2>
-  <button onclick="pay()">Оплатить 100₽</button>
 
   <script>
     function getTelegramId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get('telegram_id');
+      return params.get('telegram_id') || 'unknown';
     }
 
-    function pay() {
+    window.onload = function() {
       const telegramId = getTelegramId();
+
       const widget = new cp.CloudPayments();
       widget.charge({
-        publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // замени на свой Public ID
-        description: 'Оплата доступа в Telegram-группу',
-        amount: 100,
-        currency: 'RUB',
-        invoiceId: `tg_${telegramId}`,
-        accountId: telegramId,
-        skin: "classic",
-        data: {
-          telegram_id: telegramId
-        },
-        resultUrl: `https://t.me/subcheckstclbot?start=payment_success` // замени на имя своего бота
+          publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // твой publicId
+          description: 'Оплата доступа в Telegram-группу',
+          amount: 100,
+          currency: 'RUB',
+          invoiceId: `tg_${telegramId}`,
+          accountId: telegramId,
+          skin: "classic",
+          data: {
+              telegram_id: telegramId
+          }
       },
       function (options) {
-        // успешно — CloudPayments сам редиректит по resultUrl
+          alert("Оплата прошла успешно!");
+          // Можно сюда добавить редирект или сообщение
       },
       function (reason, options) {
-        alert("Оплата не удалась");
+          alert("Оплата не удалась, попробуйте позже.");
+          // Обработка ошибки
       });
     }
   </script>
