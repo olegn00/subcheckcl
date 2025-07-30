@@ -1,59 +1,44 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Оплата доступа</title>
-  <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
-  <style>
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      background: #f6f9fc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      color: #333;
-    }
-    #loading-text {
-      font-size: 1.2rem;
-      user-select: none;
-    }
-  </style>
-</head>
-<body>
-  <div id="loading-text">Подготовка оплаты...</div>
+<script>
+  function getTelegramId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('telegram_id') || 'unknown';
+  }
 
-  <script>
-    function getTelegramId() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('telegram_id') || 'unknown';
-    }
+  window.onload = function() {
+    const telegramId = getTelegramId();
 
-    window.onload = function() {
-      const telegramId = getTelegramId();
+    const widget = new cp.CloudPayments();
+    widget.charge({
+        publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b',
+        description: 'Оплата доступа в Telegram-группу',
+        amount: 100,
+        currency: 'RUB',
+        invoiceId: `tg_${telegramId}`,
+        accountId: telegramId,
+        skin: "mini",
+        data: {
+            telegram_id: telegramId
+        }
+    },
+    function (options) {
+        document.getElementById('loading-text').innerText = "Оплата успешна! Ожидайте...";
 
-      const widget = new cp.CloudPayments();
-      widget.charge({
-          publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // Твой publicId
-          description: 'Оплата доступа в Telegram-группу',
-          amount: 100,
-          currency: 'RUB',
-          invoiceId: `tg_${telegramId}`,  // <-- Обрати внимание на обратные кавычки!
-          accountId: telegramId,
-          skin: "mini",
-          data: {
-              telegram_id: telegramId
-          }
-      },
-      function (options) {
-          alert("Оплата прошла успешно!");
-          document.getElementById('loading-text').innerText = "Оплата успешна! Закройте это окно.";
-      },
-      function (reason, options) {
-          alert("Оплата не удалась.");
-          document.getElementById('loading-text').innerText = "Оплата не удалась. Попробуйте снова.";
-      });
-    }
-  </script>
-</body>
-</html>
+        // 🔁 Отправляем на сервер запрос для выдачи доступа
+        fetch('https://yourdomain.com/send-links', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegram_id: telegramId })
+        })
+        .then(() => {
+          document.getElementById('loading-text').innerText = "Ссылки отправлены в Telegram!";
+        })
+        .catch(() => {
+          document.getElementById('loading-text').innerText = "Произошла ошибка при отправке ссылок.";
+        });
+    },
+    function (reason, options) {
+        alert("Оплата не удалась.");
+        document.getElementById('loading-text').innerText = "Оплата не удалась. Попробуйте снова.";
+    });
+  }
+</script>
