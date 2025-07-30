@@ -8,20 +8,62 @@
     body, html {
       margin: 0; padding: 0; height: 100%;
       background: #f6f9fc;
+      font-family: Arial, sans-serif;
+      color: #333;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: Arial, sans-serif;
-      color: #333;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+      width: 600px;
+      max-width: 90vw;
+      height: 250px;
+      overflow: hidden;
+    }
+    .left-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 30px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border-right: 1px solid #ccc;
+      user-select: none;
+    }
+    .currency {
+      font-size: 1rem;
+      color: #666;
+      margin-top: 6px;
+    }
+    .right-panel {
+      flex: 1;
+      padding: 20px 30px;
     }
     #loading-text {
       font-size: 1.2rem;
-      user-select: none;
+      margin-bottom: 12px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div id="loading-text">Подготовка оплаты...</div>
+  <div class="container">
+    <div class="left-panel">
+      <div>100.00</div>
+      <div class="currency">RUB</div>
+    </div>
+    <div class="right-panel">
+      <div id="loading-text">Подготовка оплаты...</div>
+      <div id="payment-widget"></div>
+    </div>
+  </div>
 
   <script>
     function getTelegramId() {
@@ -32,7 +74,10 @@
     window.onload = function() {
       const telegramId = getTelegramId();
 
+      document.getElementById('loading-text').innerText = '';
+
       const widget = new cp.CloudPayments();
+
       widget.charge({
           publicId: 'pk_a5cf89beefa44fbf0be6ea4da712b', // Твой publicId
           description: 'Оплата доступа в Telegram-группу',
@@ -47,7 +92,6 @@
       },
       function (options) {
           alert("Оплата прошла успешно!");
-          // Можно сделать редирект или закрыть окно
           document.getElementById('loading-text').innerText = "Оплата успешна! Закройте это окно.";
       },
       function (reason, options) {
