@@ -38,7 +38,7 @@
           description: 'Оплата доступа в Telegram-группу',
           amount: 100,
           currency: 'RUB',
-          invoiceId: tg_${telegramId},
+          invoiceId: `tg_${telegramId}`,  // <-- Обрати внимание на обратные кавычки!
           accountId: telegramId,
           skin: "mini",
           data: {
@@ -47,7 +47,6 @@
       },
       function (options) {
           alert("Оплата прошла успешно!");
-          // Можно сделать редирект или закрыть окно
           document.getElementById('loading-text').innerText = "Оплата успешна! Закройте это окно.";
       },
       function (reason, options) {
